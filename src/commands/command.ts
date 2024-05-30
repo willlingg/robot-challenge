@@ -1,3 +1,3 @@
-import { RobotState } from "../models/robot";
+import { Robot, RobotState } from "../models/robot";
 
-export type Command = (robot: RobotState) => RobotState;
+export type Command = (robot: Robot) => RobotState;

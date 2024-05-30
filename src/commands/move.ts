@@ -1,9 +1,26 @@
-import { Command } from "./command";
-import { RobotState, moveRobot } from "../models/robot";
+import { RobotState } from "../models/robot";
 import { isValidPosition } from "../models/table";
 
-export const moveCommand: Command = (robot: RobotState): RobotState => {
-  const nextRobot = moveRobot(robot);
+export const move = (robot: RobotState): RobotState => {
+  const robotState = robot;
+
+  let { x, y } = robotState;
+  switch (robotState.direction) {
+    case "NORTH":
+      y += 1;
+      break;
+    case "SOUTH":
+      y -= 1;
+      break;
+    case "EAST":
+      x += 1;
+      break;
+    case "WEST":
+      x -= 1;
+      break;
+  }
+  const nextRobot = { ...robotState, x, y, placed: robotState.placed };
+
   if (isValidPosition(nextRobot.x, nextRobot.y)) {
     return nextRobot;
   }

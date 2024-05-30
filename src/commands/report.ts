@@ -1,7 +1,6 @@
-import { Command } from "./command";
-import { RobotState, reportRobot } from "../models/robot";
+import { RobotState } from "../models/robot";
 
-export const reportCommand: Command = (robot: RobotState): RobotState => {
-  console.log(reportRobot(robot));
-  return robot;
+export const report = (robot: RobotState): string => {
+  if (!robot.placed) return "Robot is not placed";
+  return `${robot.x},${robot.y},${robot.direction}`;
 };

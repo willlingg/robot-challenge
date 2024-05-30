@@ -1,8 +1,9 @@
-import {
-  Direction,
-  turnLeft as turnLeftDirection,
-  turnRight as turnRightDirection,
-} from "./direction";
+import { Direction } from "./direction";
+import { place } from "../commands/place";
+import { move } from "../commands/move";
+import { left } from "../commands/left";
+import { right } from "../commands/right";
+import { report } from "../commands/report";
 
 export interface RobotState {
   x: number;
@@ -11,59 +12,41 @@ export interface RobotState {
   placed: boolean;
 }
 
-export const createRobot = (): RobotState => ({
-  x: 0,
-  y: 0,
-  direction: "NORTH",
-  placed: false,
-});
+export interface Robot {
+  robotState: RobotState;
+  placeRobot: (x: number, y: number, direction: Direction) => void;
+  moveRobot: () => void;
+  leftRobot: () => void;
+  rightRobot: () => void;
+  reportRobot: () => void;
+}
 
-export const placeRobot = (
-  robot: RobotState,
-  x: number,
-  y: number,
-  direction: Direction
-): RobotState => ({
-  ...robot,
-  x,
-  y,
-  direction,
-  placed: true,
-});
+export const createRobot = (): Robot => {
+  let robot: RobotState = {
+    x: 0,
+    y: 0,
+    direction: "NORTH",
+    placed: false,
+  };
 
-export const moveRobot = (robot: RobotState): RobotState => {
-  if (!robot.placed) return robot;
-
-  let { x, y } = robot;
-  switch (robot.direction) {
-    case "NORTH":
-      y += 1;
-      break;
-    case "SOUTH":
-      y -= 1;
-      break;
-    case "EAST":
-      x += 1;
-      break;
-    case "WEST":
-      x -= 1;
-      break;
-  }
-
-  return { ...robot, x, y };
-};
-
-export const turnLeft = (robot: RobotState): RobotState => ({
-  ...robot,
-  direction: turnLeftDirection(robot.direction),
-});
-
-export const turnRight = (robot: RobotState): RobotState => ({
-  ...robot,
-  direction: turnRightDirection(robot.direction),
-});
-
-export const reportRobot = (robot: RobotState): string => {
-  if (!robot.placed) return "Robot is not placed";
-  return `${robot.x},${robot.y},${robot.direction}`;
+  return {
+    get robotState() {
+      return robot;
+    },
+    placeRobot: (x: number, y: number, direction: Direction) => {
+      robot = place(robot, x, y, direction);
+    },
+    moveRobot: () => {
+      robot = move(robot);
+    },
+    leftRobot: () => {
+      robot = left(robot);
+    },
+    rightRobot: () => {
+      robot = right(robot);
+    },
+    reportRobot: () => {
+      console.log(report(robot));
+    },
+  };
 };

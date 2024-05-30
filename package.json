@@ -1,7 +1,7 @@
 {
   "name": "robot-challenge",
   "version": "1.0.0",
-  "description": "## Description",
+  "description": "Robot Challenge",
   "main": "index.js",
   "directories": {
     "test": "tests"
@@ -9,7 +9,8 @@
   "scripts": {
     "build": "tsc",
     "start": "npx ts-node src/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "npm run test -- --coverage"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +24,6 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "keypress": "^0.2.1",
     "readline-sync": "^1.4.10"
   }
 }

@@ -1,45 +1,64 @@
-import * as readline from "readline";
-import { RobotState, createRobot } from "./models/robot";
-import { createPlaceCommand } from "./commands/place";
-import { moveCommand } from "./commands/move";
-import { leftCommand } from "./commands/left";
-import { rightCommand } from "./commands/right";
-import { reportCommand } from "./commands/report";
+import readline from "readline";
+import { Robot, createRobot } from "./models/robot";
 import { Direction } from "./models/direction";
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-  terminal: false,
+  prompt: "> ",
+  terminal: true,
 });
 
-let robot: RobotState = createRobot();
+let commandBuffer: string[] = [];
+let isProcessing = false;
 
-rl.on("line", (line) => {
-  const [command, args] = line.split(" ");
+let robot: Robot = createRobot();
+
+const executeCommand = (line: string) => {
+  const [command, args] = line.trim().split(" ");
 
   switch (command) {
     case "PLACE":
-      const [x, y, direction] = args.split(",");
-      robot = createPlaceCommand(
-        parseInt(x),
-        parseInt(y),
-        direction as Direction
-      )(robot);
+      if (args) {
+        const [x, y, direction] = args.split(",");
+        robot.placeRobot(parseInt(x), parseInt(y), direction as Direction);
+      }
       break;
     case "MOVE":
-      robot = moveCommand(robot);
+      robot.moveRobot();
       break;
     case "LEFT":
-      robot = leftCommand(robot);
+      robot.leftRobot();
       break;
     case "RIGHT":
-      robot = rightCommand(robot);
+      robot.rightRobot();
       break;
     case "REPORT":
-      robot = reportCommand(robot);
+      robot.reportRobot();
       break;
     default:
       console.log(`Unknown command: ${command}`);
   }
+};
+
+// Input buffer to gracefully handle large inputs
+const processNextCommand = () => {
+  if (commandBuffer.length > 0 && !isProcessing) {
+    isProcessing = true;
+    const nextCommand = commandBuffer.shift()!;
+    executeCommand(nextCommand);
+    rl.prompt();
+    isProcessing = false;
+    processNextCommand(); // Process the next command in the buffer
+  }
+};
+
+rl.on("line", (line) => {
+  commandBuffer.push(line);
+  processNextCommand();
 });
+
+process.stdin.resume();
+
+console.log("Enter commands (PLACE X,Y,F, MOVE, LEFT, RIGHT, REPORT):");
+rl.prompt();

@@ -1,6 +1,9 @@
-import { Command } from "./command";
-import { RobotState, turnLeft } from "../models/robot";
+import { RobotState } from "../models/robot";
+import { turnLeft } from "../models/direction";
 
-export const leftCommand: Command = (robot: RobotState): RobotState => {
-  return turnLeft(robot);
+export const left = (robot: RobotState): RobotState => {
+  return {
+    ...robot,
+    direction: turnLeft(robot.direction),
+  };
 };
